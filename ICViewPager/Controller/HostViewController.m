@@ -114,7 +114,7 @@
         case ViewPagerOptionCenterCurrentTab:
             return 1.0;
         case ViewPagerOptionTabLocation:
-            return 0.0;
+            return 1.0;
         case ViewPagerOptionTabHeight:
             return 49.0;
         case ViewPagerOptionTabOffset:
@@ -122,9 +122,9 @@
         case ViewPagerOptionTabWidth:
             return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 128.0 : 96.0;
         case ViewPagerOptionFixFormerTabsPositions:
-            return 1.0;
+            return 0.0;
         case ViewPagerOptionFixLatterTabsPositions:
-            return 1.0;
+            return 0.0;
         default:
             return value;
     }

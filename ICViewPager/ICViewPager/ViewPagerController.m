@@ -24,6 +24,7 @@
 
 #define kIndicatorColor [UIColor colorWithRed:178.0/255.0 green:203.0/255.0 blue:57.0/255.0 alpha:0.75]
 #define kTabsViewBackgroundColor [UIColor colorWithRed:234.0/255.0 green:234.0/255.0 blue:234.0/255.0 alpha:0.75]
+#define kSelectedTabsViewBackgroundColor [UIColor colorWithRed:200.0/255.0 green:200.0/255.0 blue:200.0/255.0 alpha:0.75]
 #define kContentViewBackgroundColor [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:0.75]
 
 #pragma mark - UIColor+Equality
@@ -77,22 +78,31 @@
     // Update view as state changed
     [self setNeedsDisplay];
 }
+
 - (void)drawRect:(CGRect)rect {
     
     UIBezierPath *bezierPath;
     
     // Draw top line
-    bezierPath = [UIBezierPath bezierPath];
-    [bezierPath moveToPoint:CGPointMake(0.0, 0.0)];
-    [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), 0.0)];
-    [[UIColor colorWithWhite:197.0/255.0 alpha:0.75] setStroke];
-    [bezierPath setLineWidth:1.0];
-    [bezierPath stroke];
+//    bezierPath = [UIBezierPath bezierPath];
+//    [bezierPath moveToPoint:CGPointMake(0.0, 0.0)];
+//    [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), 0.0)];
+//    [[UIColor colorWithWhite:197.0/255.0 alpha:0.75] setStroke];
+//    [bezierPath setLineWidth:1.0];
+//    [bezierPath stroke];
     
     // Draw bottom line
+//    bezierPath = [UIBezierPath bezierPath];
+//    [bezierPath moveToPoint:CGPointMake(0.0, CGRectGetHeight(rect))];
+//    [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), CGRectGetHeight(rect))];
+//    [[UIColor colorWithWhite:197.0/255.0 alpha:0.75] setStroke];
+//    [bezierPath setLineWidth:1.0];
+//    [bezierPath stroke];
+    
+    // Draw left
     bezierPath = [UIBezierPath bezierPath];
-    [bezierPath moveToPoint:CGPointMake(0.0, CGRectGetHeight(rect))];
-    [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), CGRectGetHeight(rect))];
+    [bezierPath moveToPoint:CGPointMake(CGRectGetWidth(rect), 5)];
+    [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), CGRectGetHeight(rect)-5)];
     [[UIColor colorWithWhite:197.0/255.0 alpha:0.75] setStroke];
     [bezierPath setLineWidth:1.0];
     [bezierPath stroke];
@@ -105,7 +115,7 @@
         // Draw the indicator
         [bezierPath moveToPoint:CGPointMake(0.0, CGRectGetHeight(rect) - 1.0)];
         [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), CGRectGetHeight(rect) - 1.0)];
-        [bezierPath setLineWidth:5.0];
+        [bezierPath setLineWidth:3.0f];
         [self.indicatorColor setStroke];
         [bezierPath stroke];
     }
@@ -146,7 +156,9 @@
 // Colors
 @property (nonatomic) UIColor *indicatorColor;
 @property (nonatomic) UIColor *tabsViewBackgroundColor;
+//@property (nonatomic) UIColor *selectedTabsViewBackgroundColor;
 @property (nonatomic) UIColor *contentViewBackgroundColor;
+
 
 @end
 
@@ -203,12 +215,12 @@
 - (void)layoutSubviews {
     
     CGFloat topLayoutGuide = 0.0;
-    if (IOS_VERSION_7) {
-        topLayoutGuide = 20.0;
-        if (self.navigationController && !self.navigationController.navigationBarHidden) {
-            topLayoutGuide += self.navigationController.navigationBar.frame.size.height;
-        }
-    }
+//    if (IOS_VERSION_7) {
+//        topLayoutGuide = 20.0;
+//        if (self.navigationController && !self.navigationController.navigationBarHidden) {
+//            topLayoutGuide += self.navigationController.navigationBar.frame.size.height;
+//        }
+//    }
     
     CGRect frame = self.tabsView.frame;
     frame.origin.x = 0.0;
@@ -318,11 +330,11 @@
     // Set to-be-inactive tab unselected
     activeTabView = [self tabViewAtIndex:self.activeTabIndex];
     activeTabView.selected = NO;
-    
+    activeTabView.backgroundColor = [UIColor clearColor];
     // Set to-be-active tab selected
     activeTabView = [self tabViewAtIndex:activeTabIndex];
     activeTabView.selected = YES;
-    
+    activeTabView.backgroundColor = [self selectedTabsViewBackgroundColor];
     // Set current activeTabIndex
     _activeTabIndex = activeTabIndex;
     
@@ -535,6 +547,15 @@
     }
     return _tabsViewBackgroundColor;
 }
+
+- (UIColor *)selectedTabsViewBackgroundColor {
+    UIColor *color = kSelectedTabsViewBackgroundColor;
+    if ([self.delegate respondsToSelector:@selector(viewPager:colorForComponent:withDefault:)]) {
+        return [self.delegate viewPager:self colorForComponent:ViewPagerSelectedTabsView withDefault:color];
+    }
+    return kSelectedTabsViewBackgroundColor;
+}
+
 - (UIColor *)contentViewBackgroundColor {
     
     if (!_contentViewBackgroundColor) {
@@ -658,6 +679,7 @@
     // These colors will be updated
     UIColor *indicatorColor;
     UIColor *tabsViewBackgroundColor;
+    UIColor *selectedTabsViewBackgroundColor;
     UIColor *contentViewBackgroundColor;
     
     // Get indicatorColor and check if it is different from the current one
@@ -729,6 +751,8 @@
             return [self indicatorColor];
         case ViewPagerTabsView:
             return [self tabsViewBackgroundColor];
+        case ViewPagerSelectedTabsView:
+            return [self selectedTabsViewBackgroundColor];
         case ViewPagerContent:
             return [self contentViewBackgroundColor];
         default:
