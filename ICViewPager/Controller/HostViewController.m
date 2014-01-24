@@ -78,7 +78,7 @@
     // Update changes after screen rotates
     [self performSelector:@selector(setNeedsReloadOptions) withObject:nil afterDelay:duration];
 }
-
+//------------------------------------------------------------------------------
 #pragma mark - ViewPagerDataSource
 - (NSUInteger)numberOfTabsForViewPager:(ViewPagerController *)viewPager {
     return self.numberOfTabs;
@@ -95,7 +95,7 @@
     
     return label;
 }
-
+//------------------------------------------------------------------------------
 - (UIViewController *)viewPager:(ViewPagerController *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
     
     ContentViewController *cvc = [self.storyboard instantiateViewControllerWithIdentifier:@"contentViewController"];
@@ -104,7 +104,7 @@
     
     return cvc;
 }
-
+//------------------------------------------------------------------------------
 #pragma mark - ViewPagerDelegate
 - (CGFloat)viewPager:(ViewPagerController *)viewPager valueForOption:(ViewPagerOption)option withDefault:(CGFloat)value {
     
@@ -129,6 +129,8 @@
             return value;
     }
 }
+
+//------------------------------------------------------------------------------
 - (UIColor *)viewPager:(ViewPagerController *)viewPager colorForComponent:(ViewPagerComponent)component withDefault:(UIColor *)color {
     
     switch (component) {
